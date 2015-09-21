@@ -101,7 +101,7 @@ def get_totmemory():
 def machine_config():
 	machine_desc = "a " 
 	(numbit,rest) = platform.architecture()
-	machine_desc = str(numbit) + " machine with a"+ cpu_countstr() + " " + get_processor_info()+" processor and "+ get_totmemory() + "GB of memory."
+	machine_desc = str(numbit) + " machine with a "+ cpu_countstr() + " " + get_processor_info()+" processor and "+ get_totmemory() + "GB of memory."
 	return machine_desc
 
 def add_evaluation():
