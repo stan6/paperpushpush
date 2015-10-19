@@ -1,5 +1,5 @@
-from psutil import virtual_memory 
-import re, subprocess, multiprocessing, shutil, pwd, os, sys, getopt, platform,urllib.request, pylatex
+fom psutil import virtual_memory 
+import re, subprocess, multiprocessing, shutil, pwd, os, sys, getopt, platform, urllib.request, pylatex
 from pylatex import Document, Section, Subsection, Table, Math, TikZ, Axis, Plot, Figure, Package, Description, MultiColumn, MultiRow, Tabular 
 from pylatex.package import Package, Command
 from pylatex.numpy import Matrix
@@ -8,7 +8,6 @@ from pylatex.utils import italic, escape_latex, dumps_list
 
 defaultname = "our approach"
 currdir = os.getcwd()
-
 
 class SimpleDocument(Document):
 	def __init__(self,default_filepath):	
@@ -42,8 +41,17 @@ def download_doc_class(doclink):
 	if not doclink:
 		doclink="http://www.acm.org/sigs/publications/sig-alternate.cls"
 	print("Downloading",doclink)
+	
+	os.environ['http_proxy']=''
 	filename = doclink.split(os.sep)[-1]
-	urllib.request.urlretrieve(doclink,filename)
+	attempts = 0
+	while attempts < 3:
+		try:
+			urllib.urlretrieve(doclink, filename)
+			break
+		except Exception:
+			attempts += 1
+	
 	return filename[0:filename.find('.')]   
 
 
@@ -160,16 +168,17 @@ def main(argv):
 	doclink = ''
 	outputfile = ''
 	try:
-		opts, args = getopt.getopt(argv,"hl:o:",["doclink=","output="])
+		opts, args = getopt.getopt(argv,"hl:o:n:",["doclink=","output=","toolname="])
 	except getopt.GetoptError:
 		sys.exit(2)
+	global defaultname
 	for opt, arg in opts:
 		if opt == '-h':
-			print("test.py -l <document class link> -o <outputfile> -n <name>")
+			print("paperpp.py -l <document class link> -o <outputfile> -n <name>")
 			sys.exit()
 		elif opt in ("-l", "--doclink"):
 			doclink = arg
-		elif opt in ("-n", "--output"):
+		elif opt in ("-n", "--toolname"):
 			defaultname = arg
 		elif opt in ("-o", "--output"):
 			outputfile = arg 
