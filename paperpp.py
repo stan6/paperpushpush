@@ -165,10 +165,12 @@ def main(argv):
 		sys.exit(2)
 	for opt, arg in opts:
 		if opt == '-h':
-			print("test.py -l <doclink> -o <outputfile>")
+			print("test.py -l <document class link> -o <outputfile> -n <name>")
 			sys.exit()
 		elif opt in ("-l", "--doclink"):
 			doclink = arg
+		elif opt in ("-n", "--output"):
+			defaultname = arg
 		elif opt in ("-o", "--output"):
 			outputfile = arg 
 	documentcls=download_doc_class(doclink)
@@ -188,7 +190,7 @@ def main(argv):
 	doc = add_text(doc)
 	doc.generate_tex(paperfile)
 	shutil.copy2(paperfile+".tex",paperfile+".tex.copy")	
-	doc.generate_pdf(paperfile)
+	#doc.generate_pdf(paperfile)
 	shutil.copy2(paperfile+".tex.copy",paperfile+".tex")	
 	os.remove(paperfile+".tex.copy")
 
