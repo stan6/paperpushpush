@@ -1,4 +1,4 @@
-fom psutil import virtual_memory 
+from psutil import virtual_memory 
 import re, subprocess, multiprocessing, shutil, pwd, os, sys, getopt, platform, urllib.request, pylatex
 from pylatex import Document, Section, Subsection, Table, Math, TikZ, Axis, Plot, Figure, Package, Description, MultiColumn, MultiRow, Tabular 
 from pylatex.package import Package, Command
@@ -39,19 +39,21 @@ def current_user():
 
 def download_doc_class(doclink):  
 	if not doclink:
-		doclink="http://www.acm.org/sigs/publications/sig-alternate.cls"
+		doclink="https://www.acm.org/sigs/publications/sig-alternate.cls"
 	print("Downloading",doclink)
-	
-	os.environ['http_proxy']=''
 	filename = doclink.split(os.sep)[-1]
 	attempts = 0
-	while attempts < 3:
-		try:
-			urllib.urlretrieve(doclink, filename)
-			break
-		except Exception:
-			attempts += 1
-	
+	user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
+	values = {'name' : 'Robot',  'location' : 'Northampton', 'language' : 'Python' }
+	headers = { 'User-Agent' : user_agent }
+	data  = urllib.parse.urlencode(values)
+	data = data.encode('utf-8')
+	req = urllib.request.Request(doclink, data, headers)
+	# Download the file from `url` and save it locally under `file_name`:
+	urllib.request.urlopen(req)
+	with urllib.request.urlopen(doclink) as response, open(filename, 'wb') as out_file:
+    		shutil.copyfileobj(response, out_file)
+
 	return filename[0:filename.find('.')]   
 
 
